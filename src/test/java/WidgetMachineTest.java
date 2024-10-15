@@ -9,7 +9,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class WidgetMachineTest {
 
-    // Test producing widgets with a Petrol Engine
+    // Test producing widgets with an internal combustion Engine (petrol)
     @Test
     public void testProduceWidgetsWithPetrolEngine() {
         Engine engine = new InternalCombustionEngine(FuelType.PETROL);
@@ -21,7 +21,7 @@ class WidgetMachineTest {
         assertEquals(new BigDecimal("18.00"), cost); // 2 batches with diesel cost (9.00 * 2)
     }
 
-    // Test producing widgets with a Diesel Engine
+    // Test producing widgets with an internal combustion Engine (diesel)
     @Test
     public void testProduceWidgetsWithDieselEngine() {
         Engine engine = new InternalCombustionEngine(FuelType.DIESEL);
@@ -33,7 +33,7 @@ class WidgetMachineTest {
         assertEquals(new BigDecimal("24.00"), cost);  // 2 batches with diesel cost (12.00 * 2)
     }
 
-    // Test producing widgets with a Steam Engine (Coal)
+    // Test producing widgets with a steam Engine (Coal)
     @Test
     public void testProduceWidgetsWithSteamEngineCoal() {
         Engine engine = new SteamEngine(FuelType.COAL);
@@ -45,7 +45,7 @@ class WidgetMachineTest {
         assertEquals(new BigDecimal("11.30"), cost);  // 2 batches with coal cost (5.65 * 2)
     }
 
-    // Test producing widgets with a Steam Engine (Wood)
+    // Test producing widgets with a steam Engine (Wood)
     @Test
     public void testProduceWidgetsWithSteamEngineWood() {
         Engine engine = new SteamEngine(FuelType.WOOD);
