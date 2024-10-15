@@ -32,7 +32,7 @@ public abstract class Engine {
         running = false;
     }
 
-    public boolean isRunning() {
+    public boolean isRunnin() {
         return running;
     }
 
