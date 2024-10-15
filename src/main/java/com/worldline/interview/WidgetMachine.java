@@ -23,6 +23,7 @@ public class WidgetMachine {
     }
 
     private BigDecimal produce(int quantity) {
+
         int batch = 0;
         int batchCount = 0;
         BigDecimal costPerBatch = BigDecimal.ZERO;
@@ -32,9 +33,9 @@ public class WidgetMachine {
         } else if (engine.getFuelType() == FuelType.DIESEL) {
             costPerBatch = new BigDecimal("12.00");
         } else if (engine.getFuelType() == FuelType.COAL) {
-            costPerBatch = new BigDecimal("4.35");
-        } else if (engine.getFuelType() == FuelType.WOOD) {
             costPerBatch = new BigDecimal("5.65");
+        } else if (engine.getFuelType() == FuelType.WOOD) {
+            costPerBatch = new BigDecimal("4.35");
         }
 
         while (batch < quantity) {
@@ -50,5 +51,7 @@ public class WidgetMachine {
         return costPerBatch.multiply(new BigDecimal(batchCount));
     }
 
-
+    public Engine getEngine() {
+        return engine;
+    }
 }

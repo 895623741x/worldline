@@ -1,129 +1,77 @@
 import com.worldline.interview.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 
 import java.math.BigDecimal;
-
-import static org.mockito.Mockito.*;
 
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class WidgetMachineTest {
 
-    private Engine mockSteamEngine;
-    private Engine mockInternalCombustionEngine;
-    private WidgetMachine widgetMachine;
+    // Test producing widgets with a Petrol Engine
+    @Test
+    public void testProduceWidgetsWithPetrolEngine() {
+        Engine engine = new InternalCombustionEngine(FuelType.PETROL);
+        engine.fill(FuelType.PETROL, 100); // Fill with valid fuel
+        WidgetMachine machine = new WidgetMachine(engine);
 
-    @BeforeEach
-    public void setUp() {
-        mockSteamEngine = new SteamEngine(FuelType.WOOD);
+        BigDecimal cost = machine.produceWidgets(16);
 
-
-        // Create the WidgetMachine with the mock Engine
-        widgetMachine = new WidgetMachine(mockEngine);
+        assertEquals(new BigDecimal("18.00"), cost); // 2 batches with diesel cost (9.00 * 2)
     }
 
+    // Test producing widgets with a Diesel Engine
     @Test
-    void testProduceWidgetsWithPetrol() {
-        // Set up the mock engine for a petrol engine
-        when(mockEngine.isRunning()).thenReturn(true);
-        when(mockEngine.getFuelType()).thenReturn(FuelType.PETROL);
-        when(mockEngine.getEngineType()).thenReturn(EngineType.INTERNAL_COMBUSTION_ENGINE);
+    public void testProduceWidgetsWithDieselEngine() {
+        Engine engine = new InternalCombustionEngine(FuelType.DIESEL);
+        engine.fill(FuelType.DIESEL, 100); // Fill with valid fuel
+        WidgetMachine machine = new WidgetMachine(engine);
 
-        // Call the method to produce widgets
-        BigDecimal cost = widgetMachine.produceWidgets(10);
+        BigDecimal cost = machine.produceWidgets(16); // Testing for multiple batches
 
-        // Verify that the engine's start and stop methods were called
-        verify(mockEngine).start();
-        verify(mockEngine).stop();
-
-        // Verify the cost for producing widgets with petrol
-        assertEquals(new BigDecimal("18.00"), cost); // 2 batches for 10 widgets at $9.00 per batch
+        assertEquals(new BigDecimal("24.00"), cost);  // 2 batches with diesel cost (12.00 * 2)
     }
 
+    // Test producing widgets with a Steam Engine (Coal)
     @Test
-    void testProduceWidgetsWithDiesel() {
-        // Set up the mock engine for a diesel engine
-        when(mockEngine.isRunning()).thenReturn(true);
-        when(mockEngine.getFuelType()).thenReturn(FuelType.DIESEL);
-        when(mockEngine.getEngineType()).thenReturn(EngineType.INTERNAL_COMBUSTION_ENGINE);
+    public void testProduceWidgetsWithSteamEngineCoal() {
+        Engine engine = new SteamEngine(FuelType.COAL);
+        engine.fill(FuelType.COAL, 100); // Fill with valid fuel
+        WidgetMachine machine = new WidgetMachine(engine);
 
-        // Call the method to produce widgets
-        BigDecimal cost = widgetMachine.produceWidgets(16);
+        BigDecimal cost = machine.produceWidgets(4); // Testing for multiple batches
 
-        // Verify that the engine's start and stop methods were called
-        verify(mockEngine).start();
-        verify(mockEngine).stop();
-
-        // Verify the cost for producing widgets with diesel
-        assertEquals(new BigDecimal("24.00"), cost); // 2 batches for 16 widgets at $12.00 per batch
+        assertEquals(new BigDecimal("11.30"), cost);  // 2 batches with coal cost (5.65 * 2)
     }
 
+    // Test producing widgets with a Steam Engine (Wood)
     @Test
-    void testProduceWidgetsWithSteamEngine() {
-        // Set up the mock engine for a steam engine (e.g., using coal)
-        when(mockEngine.isRunning()).thenReturn(true);
-        when(mockEngine.getFuelType()).thenReturn(FuelType.COAL);
-        when(mockEngine.getEngineType()).thenReturn(EngineType.STEAM_ENGINE);
+    public void testProduceWidgetsWithSteamEngineWood() {
+        Engine engine = new SteamEngine(FuelType.WOOD);
+        engine.fill(FuelType.WOOD, 100); // Fill with valid fuel
+        WidgetMachine machine = new WidgetMachine(engine);
 
-        // Call the method to produce widgets
-        BigDecimal cost = widgetMachine.produceWidgets(10);
+        BigDecimal cost = machine.produceWidgets(4); // Testing for multiple batches
 
-        // Verify that the engine's start and stop methods were called
-        verify(mockEngine).start();
-        verify(mockEngine).stop();
-
-        // Verify the cost for producing widgets with coal
-        assertEquals(new BigDecimal("26.10"), cost); // 5 batches for 10 widgets at $4.35 per batch
+        assertEquals(new BigDecimal("8.70"), cost);  // 2 batches with wood cost (4.35 * 2)
     }
 
+    // Test invalid fuel exception
     @Test
-    void testEngineDoesNotStart() {
-        // Set up the mock engine to not start (not running)
-        when(mockEngine.isRunning()).thenReturn(false);
-
-        // Call the method to produce widgets
-        BigDecimal cost = widgetMachine.produceWidgets(10);
-
-        // Verify that the engine's start and stop methods were called
-        verify(mockEngine).start();
-        verify(mockEngine).stop();
-
-        // Verify that no cost was incurred since the engine didn't start
-        assertEquals(BigDecimal.ZERO, cost);
-    }
-
-    @Test
-    void testInvalidFuelType() {
-        // Set up the mock engine to use an invalid fuel type
-        when(mockEngine.getFuelType()).thenReturn(FuelType.WOOD);
-        when(mockEngine.isRunning()).thenReturn(true);
-        when(mockEngine.getEngineType()).thenReturn(EngineType.STEAM_ENGINE);
-
-        // Call the method to produce widgets
-        BigDecimal cost = widgetMachine.produceWidgets(12);
-
-        // Verify that the engine's start and stop methods were called
-        verify(mockEngine).start();
-        verify(mockEngine).stop();
-
-        // Verify the cost for producing widgets with wood
-        assertEquals(new BigDecimal("22.60"), cost); // 4 batches for 12 widgets at $5.65 per batch
-    }
-
-    @Test
-    void testEngineStartFailureDueToFuel() {
-        // Simulate an engine start failure (e.g., because of inappropriate fuel)
-        doThrow(new IllegalStateException("Not able to start engine.")).when(mockEngine).start();
-
-        // Call the method and expect an exception
+    public void testInvalidFuelForEngine() {
+        Engine engine = new SteamEngine(FuelType.COAL);
         assertThrows(IllegalStateException.class, () -> {
-            widgetMachine.produceWidgets(10);
+            engine.fill(FuelType.DIESEL, 50);  // Attempt to fill steam engine with Diesel
         });
+    }
 
-        // Verify that stop was not called since the engine didn't start
-        verify(mockEngine, never()).stop();
+    // Test engine start failure due to lack of fuel
+    @Test
+    public void testEngineStartFailureDueToNoFuel() {
+        Engine engine = new SteamEngine(FuelType.COAL);
+        assertThrows(IllegalStateException.class, () -> {
+            engine.start();  // Attempt to start the engine with no fuel
+        });
     }
 }
